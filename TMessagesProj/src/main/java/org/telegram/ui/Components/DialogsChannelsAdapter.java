@@ -68,10 +68,14 @@ public class DialogsChannelsAdapter extends UniversalAdapter {
     // never be findable. This method instead returns every broadcast channel
     // the account is a member of, public or private, with no cap, purely
     // from local dialog data (no network request).
-    private ArrayList<TLRPC.Chat> getAllJoinedChannelsForSearch() {
+private ArrayList<TLRPC.Chat> getAllJoinedChannelsForSearch() {
         ArrayList<TLRPC.Chat> channels = new ArrayList<>();
         ArrayList<TLRPC.Dialog> dialogs = MessagesController.getInstance(currentAccount).getAllDialogs();
+        if (dialogs == null) {
+            return channels;
+        }
         for (TLRPC.Dialog d : dialogs) {
+            if (d == null) continue;
             TLRPC.Chat chat = MessagesController.getInstance(currentAccount).getChat(-d.id);
             if (chat == null || !ChatObject.isChannelAndNotMegaGroup(chat) || ChatObject.isNotInChat(chat)) continue;
             channels.add(chat);
@@ -136,13 +140,9 @@ public class DialogsChannelsAdapter extends UniversalAdapter {
             ArrayList<TLRPC.Chat> foundChannels = new ArrayList<>();
             for (TLRPC.Chat chat : searchMyChannels) {
                 TLRPC.Chat localChat = MessagesController.getInstance(currentAccount).getChat(chat.id);
-                if (ChatObject.isNotInChat(chat) && (localChat == null || ChatObject.isNotInChat(localChat)))
+                if (!ChatObject.isNotInChat(chat))
                     foundChannels.add(chat);
             }
-            for (TLRPC.Chat chat : searchRecommendedChannels) {
-                TLRPC.Chat localChat = MessagesController.getInstance(currentAccount).getChat(chat.id);
-                if (ChatObject.isNotInChat(chat) && (localChat == null || ChatObject.isNotInChat(localChat)))
-                    foundChannels.add(chat);
             }
             for (TLRPC.Chat chat : searchChannels) {
                 TLRPC.Chat localChat = MessagesController.getInstance(currentAccount).getChat(chat.id);
