@@ -142,8 +142,7 @@ private ArrayList<TLRPC.Chat> getAllJoinedChannelsForSearch() {
                 TLRPC.Chat localChat = MessagesController.getInstance(currentAccount).getChat(chat.id);
                 if (!ChatObject.isNotInChat(chat))
                     foundChannels.add(chat);
-            }
-            }
+                        }
             for (TLRPC.Chat chat : searchChannels) {
                 TLRPC.Chat localChat = MessagesController.getInstance(currentAccount).getChat(chat.id);
                 if (ChatObject.isNotInChat(chat) && (localChat == null || ChatObject.isNotInChat(localChat)))
